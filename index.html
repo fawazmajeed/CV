@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fawaz Majeed — IT Service Delivery & Workplace Technology</title>
+<link rel="icon" href="data:;base64,=">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  /* Base / palette */
+  :root{
+    --brand:#0a66c2;
+    --brand-dark:#004182;
+    --muted:#666666;
+    --bg:#f3f6f8;
+    --card:#ffffff;
+    --maxw:1100px;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif}
+  body{background:var(--bg);color:#222;line-height:1.5}
+  a{color:var(--brand);text-decoration:none}
+  .container{max-width:var(--maxw);margin:0 auto;padding:20px}
+  header{background:var(--card);position:sticky;top:0;z-index:50;box-shadow:0 3px 12px rgba(0,0,0,0.06);border-bottom:1px solid #e8eef6}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand-icon{font-size:26px;color:var(--brand)}
+  .brand-title{font-weight:700;color:var(--brand);font-size:30px;letter-spacing:0.4px}
+  nav a{margin-left:12px;color:var(--muted);font-weight:600}
+  nav a:hover{color:var(--brand)}
+  .hero{background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%);color:#fff;padding:40px 20px;border-radius:0 0 var(--radius) var(--radius);margin-bottom:24px}
+  .hero-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;max-width:var(--maxw);margin:0 auto}
+  .hero h1{font-size:30px;margin-bottom:8px}
+  .hero p{color:rgba(255,255,255,0.92);font-size:15px;margin-bottom:14px}
+  
+  .contact-links {
+	  display: flex;
+	  gap: 20px;
+	  flex-wrap: wrap;
+	  margin: 30px 0;
+	}
+	
+  /* connect buttons layout */
+  .connect-row {
+	  display: flex;
+	  gap: 10px;
+	  justify-content: center;
+	  align-items: center;
+	  margin-top: 12px;
+	  flex-wrap: wrap;
+  }
+  /* unify button sizing and icon spacing */
+  .btn {
+	  display: inline-block;
+	  padding: 12px 24px;
+	  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+	  color: #1e40af;
+	  text-decoration: none;
+	  border-radius: 12px;
+	  font-weight: 600;
+	  font-size: 12px;
+	  text-align: center;
+	  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	  box-shadow: 
+		0 1px 2px rgba(0, 0, 0, 0.12),
+		0 1px 2px rgba(0, 0, 0, 0.24),
+		inset 0 1px 0 rgba(255, 255, 255, 0.3);
+	  border: 1px solid rgba(255, 255, 255, 0.8);
+	  cursor: pointer;
+	  position: relative;
+	  min-width: 140px;
+	  letter-spacing: 0.2px;
+	  backdrop-filter: blur(10px);
+	}
+
+  .btn::before {
+	  content: '';
+	  position: absolute;
+	  top: 0;
+	  left: -100%;
+	  width: 100%;
+	  height: 100%;
+	  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+	  transition: left 0.6s;
+	}
+
+  .btn:hover {
+	  background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+	  color: #1e3a8a;
+	  transform: translateY(-4px) scale(1.02);
+	  box-shadow: 
+		0 10px 25px rgba(0, 0, 0, 0.15),
+		0 4px 10px rgba(0, 0, 0, 0.1),
+		inset 0 1px 0 rgba(255, 255, 255, 0.4);
+	  border-color: rgba(255, 255, 255, 0.9);
+	}
+
+  .btn:hover::before {
+	  left: 100%;
+	}
+  /* smaller icons inside buttons */
+  .btn i {
+	  font-size: 16px;
+	  line-height: 1;
+	  color: var(--brand);
+	}
+
+  .btn:active {
+	  transform: translateY(-1px) scale(1.01);
+	  box-shadow: 
+		0 5px 15px rgba(0, 0, 0, 0.12),
+		0 2px 4px rgba(0, 0, 0, 0.08);
+	}
+
+  .btn:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 2px 8px rgba(0, 0, 0, 0.15);
+	}
+	
+	/* Alternative style - Colorful buttons */
+  .btn-alt {
+	  display: inline-block;
+	  padding: 14px 28px;
+	  background: linear-gradient(45deg, #ff6b35, #f7931e);
+	  color: white;
+	  text-decoration: none;
+	  border-radius: 30px;
+	  font-weight: 700;
+	  font-size: 15px;
+	  text-align: center;
+	  transition: all 0.3s ease;
+	  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+	  border: none;
+	  cursor: pointer;
+	  position: relative;
+	  min-width: 160px;
+	  letter-spacing: 0.5px;
+	  text-transform: uppercase;
+	}
+
+  .btn-alt:hover {
+	  background: linear-gradient(45deg, #f7931e, #ff6b35);
+	  transform: translateY(-4px);
+	  box-shadow: 0 8px 30px rgba(255, 107, 53, 0.6);
+	}
+	
+  .btn.whatsapp { background:#ffffff; border-color: rgba(37,211,102,0.12); }
+  .btn.whatsapp i { color: #25D366; }
+  .profile-card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.06);text-align:center}
+  .profile-img{width:120px;height:120px;border-radius:50%;background:linear-gradient(180deg,var(--brand),var(--brand-dark));display:inline-block;margin-bottom:12px}
+  .profile-name{color:var(--brand);font-weight:700;font-size:18px}
+  .profile-role{color:var(--muted);margin-bottom:12px;font-size:14px}
+  .connect-row{display:flex;gap:10px;justify-content:center;margin-top:8px}
+  .section{padding:36px 0}
+  .section-title{color:var(--brand);font-size:20px;margin-bottom:14px;font-weight:700;text-align:left}
+  .about{background:var(--card);padding:18px;border-radius:10px;border:1px solid #e9eef6}
+  .two-col{display:grid;grid-template-columns:1fr 340px;gap:20px}
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:12px}
+  .skill-pill{background:#fff;border-radius:8px;padding:10px;border:1px solid #eef5fc;color:var(--brand);font-weight:600;text-align:center}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:12px}
+  .kpi{background:var(--card);padding:16px;border-radius:10px;border:1px solid #eef5fc;text-align:center}
+  .kpi .value{font-weight:700;color:var(--brand);font-size:18px;margin-bottom:6px}
+  .timeline{margin-top:10px}
+  .timeline-item{background:var(--card);padding:14px;border-radius:8px;border:1px solid #e9eef6;margin-bottom:12px;box-shadow:0 4px 18px rgba(0,0,0,0.04)}
+  .proj-list{list-style:disc;padding-left:18px;color:#333}
+  footer{padding:20px 0;margin-top:24px;background:var(--card);border-top:1px solid #e8eef6;text-align:center}
+  .footer-links{display:flex;gap:12px;justify-content:center;margin-bottom:12px}
+
+  .profile-img {
+	  width:120px;
+	  height:120px;
+	  border-radius:50%;
+	  object-fit:cover;    /* important to crop nicely */
+	  display:inline-block;
+	}
+
+
+  /* responsive */
+  @media(max-width:420px){
+	.btn { min-width: 110px; padding: 8px 10px; gap:8px; font-size:14px }
+    .hero-grid{grid-template-columns:1fr}
+    .two-col{grid-template-columns:1fr}btn
+    nav a{display:none}
+  }
+  /* smooth scrolling */
+  html { scroll-behavior: smooth; }
+  /* offset so sticky header doesn't hide the section heading */
+  #home { scroll-margin-top: 110px; }       /* adjust 110px to match your header height */
+  #about { scroll-margin-top: 110px; }       /* adjust 110px to match your header height */
+  .section { scroll-margin-top: 110px; }    /* for other section anchors too */
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container header-inner">
+    <div class="brand">
+      <div class="brand-icon"><i class="fas fa-laptop-code"></i></div>
+      <div>
+        <div class="brand-title">Fawaz Abdul Majeed</div>
+        <div style="font-size:14px;color:var(--muted)">Senior IT Manager — Service Delivery & Workplace Technology</div>
+      </div>
+    </div>
+
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+	  <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section id="home" class="hero" role="banner">
+  <div class="container hero-grid">
+    <div>
+      <h1>Professional Summary</h1>
+      <p>
+        IT Service Management leader with 16+ years of international experience in service delivery, workplace technology and IT operations.
+        I help organisations deliver stable, compliant and user-friendly technology services through ITIL-aligned governance, vendor coordination and pragmatic automation.
+      </p>
+      <div class="contact-links" aria-hidden="false">
+        <a class="btn" href="https://drive.google.com/file/d/1EgLXLCcRWZlQn4zNLpbGUb8RXF_RRK1j/view?usp=sharing" target="_blank" rel="noopener">Download CV (PDF)</a>
+        <a class="btn" href="https://fawazmjaeed.github.io/projects/" target="_blank" rel="noopener">View Project Portfolio</a>
+		<a class="btn" href="https://fawazmjaeed.github.io/skillsmapping/" target="_blank" rel="noopener">View Skill Mapping</a>
+      </div>
+      <div style="margin-top:12px;color:rgba(255,255,255,0.9);font-size:13px">Open to relocation • Available immediately</div>
+    </div>
+
+    <aside>
+      <div class="profile-card" role="region" aria-label="Profile card">
+		<img src="profile.jpg" alt="Fawaz Majeed — profile photo" class="profile-img" />
+        <div class="profile-name">Fawaz Abdul Majeed</div>
+        <div class="profile-role">IS / IT Service Delivery Manager</div>
+
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px">India • Open to relocate • Available immediately</div>
+
+        <div class="connect-row">
+          <a class="btn" href="mailto:fawaz.majeed@yahoo.com"><i class="fas fa-envelope" style="margin-right:8px"></i>Email</a>
+          <a class="btn" href="https://www.linkedin.com/in/fawazmajeed/" target="_blank"><i class="fab fa-linkedin-in" style="margin-right:8px"></i>LinkedIn</a>
+		  <a class="btn" href="https://wa.me/971509728734" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" >
+		  <i class="fab fa-whatsapp" aria-hidden="true"></i>
+		  <span>WhatsApp</span>
+		  </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<div class="container" id="about" role="main">
+  <section class="section">
+    <h2 class="section-title">About</h2>
+    <div class="about">
+      <p>
+        I am an IT Service Management professional with over 16 years of experience delivering IT operations, end-user services, and workplace technology across retail, consulting and industrial environments.
+        My practical strengths are SLA & KPI governance, incident and problem management, vendor coordination, and delivering pragmatic automation to improve stability and response times.
+      </p>
+    </div>
+  </section>
+
+  <section id="skills" class="section">
+    <h2 class="section-title">Core Skills</h2>
+    <div class="skills-grid" role="list">
+      <div class="skill-pill">IT Budgeting & Cost Optimization</div>
+      <div class="skill-pill">ITSM Governance (Incident, SR, Problem, Change)</div>
+      <div class="skill-pill">IT Project Management & Delivery</div>
+      <div class="skill-pill">Performance - SLA|XLA KPI Management</div>
+      <div class="skill-pill">Contract & Vendor Management</div>
+      <div class="skill-pill">Stakeholder Management</div>
+      <div class="skill-pill">Digital Workplace (M365, Power Automate, AI)</div>
+      <div class="skill-pill">Endpoint | Asset Lifecycle Management</div>
+      <div class="skill-pill">Audit & Compliance Readiness</div>
+      <div class="skill-pill">Process Automation & Knowledgebase</div>
+	  <div class="skill-pill">Service Desk & EUC Operations</div>
+	  <div class="skill-pill">Critical Incident | Problem Manager</div>
+    </div>
+  </section>
+
+  <section id="projects" class="section">
+    <h2 class="section-title">Project Portfolio</h2>
+    <p style="color:var(--muted);margin-bottom:12px">Selected projects delivered during last 5 year tenure at Louis Vuitton Middle East as IS Manager for the region.</p>
+
+    <div class="kpi-grid" aria-hidden="false">
+      <div class="kpi">
+        <div class="value">65+</div>
+        <div>Projects Completed</div>
+      </div>
+      <div class="kpi">
+        <div class="value">7</div>
+        <div>Countries</div>
+      </div>
+      <div class="kpi">
+        <div class="value">60</div>
+        <div>Months (tenure)</div>
+      </div>
+      <div class="kpi">
+        <div class="value">100%</div>
+        <div>Scope Completion (project record)</div>
+      </div>
+    </div>
+
+    <p style="margin-top:14px;color:var(--muted)">Highlights: Store openings, System migrations, Roadmap projects, Event support and digital workplace tech rollouts. See full portfolio: <a href="https://fawazmjaeed.github.io/projects/" target="_blank">Project Portfolio</a></p>
+  </section>
+
+  <section id="experience" class="section">
+    <h2 class="section-title">Experience</h2>
+
+    <!-- Louis Vuitton -->
+    <div class="timeline-item" role="article" aria-labelledby="lv-title">
+      <h3 id="lv-title" style="color:var(--brand);margin-bottom:6px">Louis Vuitton [LVMH] — IS Manager, Middle East</h3>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Dubai, UAE — Aug 2019 – Oct 2024</div>
+      <ul class="proj-list">
+        <li>Managed IT service delivery and workplace technology operations across 24 sites in 7 countries.</li>
+        <li>Oversaw SLA/KPI compliance for incident, request, change, and problem management using ServiceNow & BMC.</li>
+        <li>IS&T Project manager for the region delivering retail techn projects including store rollouts, roadmap projects and events support.</li>
+		<li>Managed budgets and vendor contracts, ensuring timely renewals, cost optimization and audit compliance</li>
+        <li>Coordinated vendors for infrastructure, network and store tech; managed budgets and vendor contracts.</li>
+        <li>Introduced automation (Power Automate) and process improvements to improve response times and service maturity.</li>
+		<li>Coached, developed and managed a high performing IT team, increasing support team productivity.</li>
+      </ul>
+    </div>
+
+    <!-- NIMR Automotive -->
+    <div class="timeline-item" role="article" aria-labelledby="nimr-title">
+      <h3 id="nimr-title" style="color:var(--brand);margin-bottom:6px">NIMR Automotive — System Administrator / Support Lead</h3>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Abu Dhabi, UAE — May 2016 – Aug 2019</div>
+      <ul class="proj-list">
+        <li>Key role in new facility project including Data Center, System & Network infra deployment, Workplace tech & Office relocation.</li>
+		<li>Implemented Service Desk aligned to ITIL framework.</li>
+		<li>Improved response times and introduced monitoring and backup strategies.</li>
+        <li>Managed Windows server infrastructure, AD, DNS, patch compliance and achieved improved uptime and compliance outcomes.</li>
+      </ul>
+    </div>
+
+    <!-- MDS Computer -->
+    <div class="timeline-item" role="article" aria-labelledby="nimr-title">
+      <h3 id="nimr-title" style="color:var(--brand);margin-bottom:6px">MDS Computer - IT Project Coordinator / Support Specialist</h3>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Abu Dhabi, UAE — Dec 2014 – May 2016</div>
+      <ul class="proj-list">
+        <li>Led vendor partnerships in windows projects, reducing downtime during system transitions.</li>
+		<li>Problem management to drive for permanent resolution to control incident trend.</li>
+      </ul>
+    </div>
+
+    <!-- Accenture -->
+    <div class="timeline-item" role="article" aria-labelledby="accenture-title">
+      <h3 id="accenture-title" style="color:var(--brand);margin-bottom:6px">Accenture India — Live Service Team Lead / Problem Manager</h3>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Bangalore, India — Jun 2011 – May 2014</div>
+      <ul class="proj-list">
+        <li>Led daily ITSM operations, SLA and major incident handling for enterprise clients in a managed services delivery model.</li>
+        <li>Owned problem management including RCA and long-term fixes; conducted SLA review and performance reports.</li>
+      </ul>
+    </div>
+
+    <!-- Valtech -->
+    <div class="timeline-item" role="article" aria-labelledby="valtech-title">
+      <h3 id="valtech-title" style="color:var(--brand);margin-bottom:6px">Valtech India — Tech Support Team Lead</h3>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Bangalore, India — Mar 2008 – Mar 2011</div>
+      <ul class="proj-list">
+        <li>Delivered 24/7 support for North America operations with focus on SLA compliance and problem management.</li>
+      </ul>
+    </div>
+
+  </section>
+
+  <section id="education" class="section">
+    <h2 class="section-title">Academics & Certifications</h2>
+    <div style="background:var(--card);padding:14px;border-radius:8px;border:1px solid #eef5fc">
+      <ul class="proj-list">
+        <li>Advanced Certification — Data & Decision Science, IIT Delhi (May 2025)</li>
+        <li>Python Essentials – Jan 2025</li>
+		<li>PMI-PMP Project Management Certification Training (UAE) – Dec 2014</li>
+        <li>Microsoft Certified Systems Engineer (MCSE) (India) – Apr 2011</li>
+		<li>ITIL V3 Foundation Certification (Bangalore, India) – Jan 2011</li>
+		<li>IBM AS400 Programming & System Concepts (India) – Jul 2006</li>
+		<li>Bachelor of Engineering B.E (India) – Jun 2006</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contact" class="section">
+    <h2 class="section-title">Contact</h2>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+      <div style="flex:1;min-width:240px;">
+        <div style="background:var(--card);padding:12px;border-radius:8px;border:1px solid #eef5fc">
+          <strong>Email</strong><div style="color:var(--muted);margin-bottom:8px">fawaz.majeed@yahoo.com</div>
+          <strong>Phone</strong><div style="color:var(--muted);margin-bottom:8px">+91 8089119877</div>
+          <strong>WhatsApp</strong><div style="color:var(--muted)">+971 509728734</div>
+        </div>
+      </div>
+
+      <div style="min-width:220px">
+        <div style="background:var(--card);padding:12px;border-radius:8px;border:1px solid #eef5fc">
+          <strong>Quick links</strong>
+          <ul style="margin-top:8px">
+            <li><a href="https://drive.google.com/file/d/1EgLXLCcRWZlQn4zNLpbGUb8RXF_RRK1j/view?usp=sharing" target="_blank" target="_blank">Download CV (PDF)</a></li>
+            <li><a href="https://fawazmjaeed.github.io/projects/" target="_blank">Project Portfolio & Timeline</a></li>
+            <li><a href="https://www.linkedin.com/in/fawazmajeed/" target="_blank">LinkedIn profile</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer role="contentinfo">
+  <div class="container">
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/fawazmajeed/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+      <a href="https://wa.me/971509728734" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="mailto:fawaz.majeed@yahoo.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+    </div>
+    <p style="color:var(--muted);max-width:820px;margin:0 auto 12px">I help organisations to achieve reliable, compliant and user-focused workplace technology through pragmatic service delivery, process governance and vendor coordination. If you are interested in IT service transformation or technology delivery excellence, please get in touch.</p>
+    <div style="color:#999;font-size:13px">© Fawaz MAJEED</div>
+  </div>
+</footer>
+
+</body>
+</html>
