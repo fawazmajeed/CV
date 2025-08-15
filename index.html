@@ -25,7 +25,7 @@
   .header-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
   .brand{display:flex;align-items:center;gap:12px}
   .brand-icon{font-size:26px;color:var(--brand)}
-  .brand-title{font-weight:700;color:var(--brand);font-size:30px;letter-spacing:0.4px}
+  .brand-title{font-weight:700;color:var(--brand);font-size:34px;letter-spacing:0.4px}
   nav a{margin-left:12px;color:var(--muted);font-weight:600}
   nav a:hover{color:var(--brand)}
   .hero{background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%);color:#fff;padding:40px 20px;border-radius:0 0 var(--radius) var(--radius);margin-bottom:24px}
@@ -128,12 +128,77 @@
   footer{padding:20px 0;margin-top:24px;background:var(--card);border-top:1px solid #e8eef6;text-align:center}
   .footer-links{display:flex;gap:12px;justify-content:center;margin-bottom:12px}
   /* responsive */
-  @media(max-width:420px){
-	.btn { min-width: 110px; padding: 8px 10px; gap:8px; font-size:14px }
-    .hero-grid{grid-template-columns:1fr}
-    .two-col{grid-template-columns:1fr}btn
-    nav a{display:none}
-  }
+/* Extra responsive tweaks for better mobile layout */
+	@media (max-width: 768px) {
+	  .header-inner {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+	  }
+
+	  nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	  }
+
+	  nav a {
+		margin: 0;
+		font-size: 14px;
+		padding: 6px 10px;
+		background: var(--card);
+		border-radius: 6px;
+		border: 1px solid #e0e0e0;
+	  }
+
+	  .hero-grid {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	  }
+
+	  .two-col {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	  }
+
+	  .btn {
+		min-width: auto;
+		width: 100%;
+		font-size: 14px;
+		padding: 10px 12px;
+	  }
+
+	  .contact-links {
+		flex-direction: column;
+		gap: 12px;
+	  }
+
+	  .skills-grid, .kpi-grid {
+		grid-template-columns: 1fr 1fr;
+	  }
+
+	  .profile-img {
+		width: 100px;
+		height: 100px;
+	  }
+
+	  h1 {
+		font-size: 24px;
+	  }
+
+	  .section-title {
+		font-size: 18px;
+	  }
+	}
+
+	@media (max-width: 420px) {
+	  nav {
+		justify-content: center;
+	  }
+	  .skills-grid, .kpi-grid {
+		grid-template-columns: 1fr;
+	  }
+	}
   /* smooth scrolling */
   html { scroll-behavior: smooth; }
   /* offset so sticky header doesn't hide the section heading */
@@ -150,7 +215,7 @@
       <div class="brand-icon"><i class="fas fa-laptop-code"></i></div>
       <div>
         <div class="brand-title">Fawaz Abdul Majeed</div>
-        <div style="font-size:14px;color:var(--muted)">Senior IT Manager — Service Delivery & EUC</div>
+        <div style="font-size:14px;color:var(--muted)">Senior IT Manager | IS&T Service Delivery | ITSM | EUC</div>
       </div>
     </div>
 
@@ -184,7 +249,7 @@
       <div class="profile-card" role="region" aria-label="Profile card">
         <div class="profile-img" aria-hidden="true"></div>
         <div class="profile-name">Fawaz Abdul Majeed</div>
-        <div class="profile-role">IS / IT Service Delivery Manager</div>
+        <div class="profile-role">Senior IT Service Delivery & Project Manager</div>
 
         <div style="font-size:13px;color:var(--muted);margin-bottom:10px">India • Open to relocate • Available immediately</div>
 
