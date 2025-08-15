@@ -60,6 +60,7 @@
 	  font-weight: 600;
 	  font-size: 12px;
 	  text-align: center;
+	  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 	  box-shadow: 
 		0 1px 2px rgba(0, 0, 0, 0.12),
 		0 1px 2px rgba(0, 0, 0, 0.24),
@@ -70,16 +71,6 @@
 	  min-width: 140px;
 	  letter-spacing: 0.2px;
 	  backdrop-filter: blur(10px);
-	}
-
-  .btn::before {
-	  content: '';
-	  position: absolute;
-	  top: 0;
-	  left: -100%;
-	  width: 100%;
-	  height: 100%;
-	  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 	}
 
   .btn:hover {
@@ -115,32 +106,6 @@
 	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 2px 8px rgba(0, 0, 0, 0.15);
 	}
 	
-	/* Alternative style - Colorful buttons */
-  .btn-alt {
-	  display: inline-block;
-	  padding: 14px 28px;
-	  background: linear-gradient(45deg, #ff6b35, #f7931e);
-	  color: white;
-	  text-decoration: none;
-	  border-radius: 30px;
-	  font-weight: 700;
-	  font-size: 16px;
-	  text-align: center;
-	  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
-	  border: none;
-	  cursor: pointer;
-	  position: relative;
-	  min-width: 160px;
-	  letter-spacing: 0.5px;
-	  text-transform: uppercase;
-	}
-
-  .btn-alt:hover {
-	  background: linear-gradient(45deg, #f7931e, #ff6b35);
-	  transform: translateY(-4px);
-	  box-shadow: 0 8px 30px rgba(255, 107, 53, 0.6);
-	}
-	
   .btn.whatsapp { background:#ffffff; border-color: rgba(37,211,102,0.12); }
   .btn.whatsapp i { color: #25D366; }
   .profile-card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.06);text-align:center}
@@ -162,15 +127,6 @@
   .proj-list{list-style:disc;padding-left:18px;color:#333}
   footer{padding:20px 0;margin-top:24px;background:var(--card);border-top:1px solid #e8eef6;text-align:center}
   .footer-links{display:flex;gap:12px;justify-content:center;margin-bottom:12px}
-
-  .profile-img {
-	  width:120px;
-	  height:120px;
-	  border-radius:50%;
-	  object-fit:cover;    /* important to crop nicely */
-	  display:inline-block;
-	}
-
   /* responsive */
   @media(max-width:420px){
 	.btn { min-width: 110px; padding: 8px 10px; gap:8px; font-size:14px }
@@ -193,8 +149,8 @@
     <div class="brand">
       <div class="brand-icon"><i class="fas fa-laptop-code"></i></div>
       <div>
-        <div class="brand-title">Fawaz Majeed</div>
-        <div style="font-size:14px;color:var(--muted)">Senior IT Manager — Service Delivery & Workplace Technology</div>
+        <div class="brand-title">Fawaz Abdul Majeed</div>
+        <div style="font-size:14px;color:var(--muted)">Senior IT Manager — Service Delivery & EUC</div>
       </div>
     </div>
 
@@ -214,20 +170,19 @@
     <div>
       <h1>Professional Summary</h1>
       <p>
-        IT Service Management leader with 16+ years of international experience in service delivery, workplace technology and IT operations.
-        I help organisations deliver stable, compliant and user-friendly technology services through ITIL-aligned governance, vendor coordination and pragmatic automation.
+        IT Service Management leader with 16+ years of international experience in IT Project Managment, Service delivery, Workplace technology and IT operations.
+        I help organisations deliver stable, compliant and user friendly technology services through ITIL aligned governance, vendor coordination and pragmatic automation.
       </p>
       <div class="contact-links" aria-hidden="false">
         <a class="btn" href="https://drive.google.com/file/d/1EgLXLCcRWZlQn4zNLpbGUb8RXF_RRK1j/view?usp=sharing" target="_blank" rel="noopener">Download CV (PDF)</a>
-        <a class="btn" href="https://fawazmjaeed.github.io/projects/" target="_blank" rel="noopener">View Project Portfolio</a>
-		<a class="btn" href="https://fawazmjaeed.github.io/skillsmapping/" target="_blank" rel="noopener">View Skill Mapping</a>
+        <a class="btn" href="https://fawazmajeed.github.io/projects/" target="_blank" rel="noopener">View Project Portfolio</a>
+		<a class="btn" href="https://fawazmajeed.github.io/skillsmapping/" target="_blank" rel="noopener">View Skill Mapping</a>
       </div>
-      <div style="margin-top:12px;color:rgba(255,255,255,0.9);font-size:13px">Open to relocation • Available immediately</div>
     </div>
 
     <aside>
       <div class="profile-card" role="region" aria-label="Profile card">
-		<img src="profile.jpg" alt="Fawaz Majeed — profile photo" class="profile-img" />
+        <div class="profile-img" aria-hidden="true"></div>
         <div class="profile-name">Fawaz Abdul Majeed</div>
         <div class="profile-role">IS / IT Service Delivery Manager</div>
 
@@ -251,8 +206,8 @@
     <h2 class="section-title">About</h2>
     <div class="about">
       <p>
-        I am an IT Service Management professional with over 16 years of experience delivering IT operations, end-user services, and workplace technology across retail, consulting and industrial environments.
-        My practical strengths are SLA & KPI governance, incident and problem management, vendor coordination, and delivering pragmatic automation to improve stability and response times.
+        I am an IT Service Management professional with over 16 years of experience delivering IT operations, end user services, and workplace technology across retail, automotive, insurance, consulting and industrial environments.
+        My practical strengths are IT project management, SLA/XLA & KPI governance, incident and problem management, vendor coordination, and delivering pragmatic automation to improve stability and response times.
       </p>
     </div>
   </section>
@@ -264,13 +219,13 @@
       <div class="skill-pill">ITSM Governance (Incident, SR, Problem, Change)</div>
       <div class="skill-pill">IT Project Management & Delivery</div>
       <div class="skill-pill">Performance - SLA|XLA KPI Management</div>
-      <div class="skill-pill">Contract & Vendor Management</div>
+      <div class="skill-pill">Contract & Vendor Relationship</div>
       <div class="skill-pill">Stakeholder Management</div>
       <div class="skill-pill">Digital Workplace (M365, Power Automate, AI)</div>
       <div class="skill-pill">Endpoint | Asset Lifecycle Management</div>
       <div class="skill-pill">Audit & Compliance Readiness</div>
       <div class="skill-pill">Process Automation & Knowledgebase</div>
-	  <div class="skill-pill">Service Desk & EUC Operations</div>
+	  <div class="skill-pill">Data Science & Decision Science</div>
 	  <div class="skill-pill">Critical Incident | Problem Manager</div>
     </div>
   </section>
@@ -298,7 +253,7 @@
       </div>
     </div>
 
-    <p style="margin-top:14px;color:var(--muted)">Highlights: Store openings, System migrations, Roadmap projects, Event support and digital workplace tech rollouts. See full portfolio: <a href="https://fawazmjaeed.github.io/projects/" target="_blank">Project Portfolio</a></p>
+    <p style="margin-top:14px;color:var(--muted)">Highlights: Store openings, System migrations, Roadmap projects, Event support and digital workplace tech rollouts. See full portfolio: <a href="https://fawazmajeed.github.io/projects/" target="_blank">Project Portfolio</a></p>
   </section>
 
   <section id="experience" class="section">
@@ -393,7 +348,7 @@
           <strong>Quick links</strong>
           <ul style="margin-top:8px">
             <li><a href="https://drive.google.com/file/d/1EgLXLCcRWZlQn4zNLpbGUb8RXF_RRK1j/view?usp=sharing" target="_blank" target="_blank">Download CV (PDF)</a></li>
-            <li><a href="https://fawazmjaeed.github.io/projects/" target="_blank">Project Portfolio & Timeline</a></li>
+            <li><a href="https://fawazmajeed.github.io/projects/" target="_blank">Project Portfolio & Timeline</a></li>
             <li><a href="https://www.linkedin.com/in/fawazmajeed/" target="_blank">LinkedIn profile</a></li>
           </ul>
         </div>
