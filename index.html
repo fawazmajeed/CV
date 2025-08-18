@@ -25,7 +25,7 @@
   .header-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px}
   .brand{display:flex;align-items:center;gap:12px}
   .brand-icon{font-size:26px;color:var(--brand)}
-  .brand-title{font-weight:700;color:var(--brand);font-size:34px;letter-spacing:0.4px}
+  .brand-title{font-weight:800;color:var(--brand);font-size:36px;letter-spacing:0.4px}
   nav a{margin-left:12px;color:var(--muted);font-weight:600}
   nav a:hover{color:var(--brand)}
   .hero{background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 100%);color:#fff;padding:10px 20px;border-radius:0 0 var(--radius) var(--radius);margin-bottom:24px}
@@ -108,9 +108,8 @@
 	
   .btn.whatsapp { background:#ffffff; border-color: rgba(37,211,102,0.12); }
   .btn.whatsapp i { color: #25D366; }
-  .profile-card{background:var(--card);padding:6px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.06);text-align:center}
-  .profile-img{width:120px;height:120px;border-radius:50%;background:linear-gradient(180deg,var(--brand),var(--brand-dark));display:inline-block;margin-bottom:12px}
-  .profile-name{color:var(--brand);font-weight:700;font-size:18px}
+  .profile-card{background:var(--card);padding:24px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.06);text-align:left}
+  .profile-name{color:var(--brand);font-weight:700;font-size:18px;text-align:center}
   .profile-role{color:var(--muted);margin-bottom:12px;font-size:14px}
   .connect-row{display:flex;gap:10px;justify-content:center;margin-top:8px}
   .section{padding:36px 0}
@@ -191,6 +190,19 @@
 	  }
 	}
 
+	  .hero ul {
+	  list-style: none;
+	  margin: 1em 0 0 1.5em; 
+	  padding: 2px;
+	}
+
+	.hero ul li::before {
+	  content: "✔ "; 
+	  color: white;
+	  font-weight: bold;
+	}
+
+
 	@media (max-width: 420px) {
 	  nav {
 		justify-content: center;
@@ -215,7 +227,7 @@
       <div class="brand-icon"><i class="fas fa-laptop-code"></i></div>
       <div>
         <div class="brand-title">Fawaz Abdul Majeed</div>
-        <div style="font-size:14px;color:var(--muted)">Senior IT Manager | IS&T Service Delivery | Projects | EUC</div>
+        <div style="font-size:15px;color:var(--muted)">Senior IT Manager | IS&T Service Delivery | Projects | EUC</div>
       </div>
     </div>
 
@@ -233,41 +245,71 @@
 <section id="home" class="hero" role="banner">
   <div class="container hero-grid">
     <div>
-      <h1>Professional Summary</h1>
-      <p>
-        16+ years delivering reliable IT services across Enterprise tech support, workplace technology, infrastructure, projects, and site operations in multi country, multi site environments.
 
-		Applies ITIL governance and PMP practices with vendor/stakeholder management and pragmatic automation to improve stability, compliance, and usability.
-
-		Comfortable to lead cross functional teams and partners to meet SLAs, audit compliances, and to support business technology initiatives.
-
-		Positions IT as a visible business enabler and internal brand; not only a support function. 
-      </p>
+      <h3>Senior IT Manager / Head of IT</h3>
+      <ul>
+	  <li>Led multi site IT ops across 7 countries with ~99.9% uptime.</li>
+	  <li>Strengthened vendor performance and cost optimization; enforced SLA/XLA.</li>
+	  <li>Delivered zero disruption project rollouts (stores, tech roadmap, events etc).</li>
+	  </ul>
 	  <br>
+
+      <h3>ITSM Leader (Major Incident, Problem, Change)</h3>
+      <ul>
+	  <li>War room orchestration, PIRs, RCA/KEDB; measurable breach reduction.</li>
+	  <li>Risk based CAB, backout plans, implementation windows</li>
+	  <li>CMDB/Asset hygiene and audit readiness improvements.</li>
+	  </ul>
 	  <br>
+
+      <h3>Service Delivery/Customer Success</h3>
+      <ul>
+	  <li>KPI dashboards, aged/breach cadences, cross domain coordination (NOC/SOC/SD)</li>
+	  <li>M365/Power Automate workflows to cut handling time and improve UX</li>
+	  <li>Data based decsions for process optimization and Continuous Improvements</li>
+	  </ul>
+	  <br>
+
       <div class="contact-links" aria-hidden="false">
         <a class="btn" href="https://drive.google.com/file/d/1x5lCXj8bsPg4K9GUUag4OXgejsqxpY9T/view?usp=sharing" target="_blank" rel="noopener">Download CV (PDF)</a>
         <a class="btn" href="https://fawazmajeed.github.io/projects/" target="_blank" rel="noopener">View Project Portfolio</a>
-		<a class="btn" href="https://calendar.app.google/bKuHMxissXezL4kTA" target="_blank" rel="noopener">Book a Meeting Slot</a>
+		<a class="btn" href="https://calendar.app.google/bKuHMxissXezL4kTA" target="_blank" rel="noopener">Book a 15‑min intro call</a>
       </div>
     </div>
 
     <aside>
+
+	  
       <div class="profile-card" role="region" aria-label="Profile card">
-        <div class="profile-img" aria-hidden="true"></div>
-        <div class="profile-name">Fawaz Abdul Majeed</div>
-        <div class="profile-role">Senior IT Service Delivery & Project Manager</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:10px">India • Open to relocate • Available immediately</div>
+	  
+        <div style="font-size:14px;color:black;text-align:center;margin-bottom:10px"> India • Open to relocate • 0-15 days notice</div>
         <div class="connect-row">
           <a class="btn" href="mailto:fawaz.majeed@yahoo.com"><i class="fas fa-envelope" style="margin-right:8px"></i>Email</a>
           <a class="btn" href="https://www.linkedin.com/in/fawazmajeed/" target="_blank"><i class="fab fa-linkedin-in" style="margin-right:8px"></i>LinkedIn</a>
 		  <a class="btn" href="https://wa.me/971509728734" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" >
 		  <i class="fab fa-whatsapp" aria-hidden="true"></i>
-		  <span>WhatsApp</span>
-		  </a>
-        </div>
+		  <span>WhatsApp</span></a>
+		</div>
+		<br>
+
+        <div class="profile-name">Professional Summary</div>
+		<br>
+        <div class="profile-role">16+ years delivering reliable IT services across Enterprise tech support, workplace technology, infrastructure, projects, and site operations in multi country, multi site environments.</div>
+        <div class="profile-role">Applies ITIL governance and PMP practices with vendor/stakeholder management and pragmatic automation to improve stability, compliance, and usability.</div>
+		<div class="profile-role">Comfortable to lead cross functional teams and partners to meet SLAs, audit compliances, and to support business technology initiatives.</div>
+		<div class="profile-role">Positions IT as a visible business enabler and internal brand; not only a support function.</div>
       </div>
+	  
+		<br>
+
+		
     </aside>
+
+
+
+
+
+
   </div>
 </section>
 
