@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fawaz Majeed | IT Leader</title>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Caveat:wght@400;600;700&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#140c04}
+
+/* ── BOARD ──────────────────────────────────────────────── */
+#board{
+  position:fixed;inset:0;
+  background:#c07d3a;
+  border:22px solid #2a1505;
+  box-shadow:inset 0 0 60px rgba(0,0,0,0.4),inset 0 0 120px rgba(0,0,0,0.2);
+  transform:translateY(100vh);
+  transition:transform 0.9s cubic-bezier(0.22,1,0.36,1);
+  overflow:hidden;
+}
+#board.visible{transform:translateY(0)}
+
+/* Cork texture */
+#board::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    radial-gradient(circle at 20% 30%,rgba(0,0,0,0.06) 1px,transparent 1px),
+    radial-gradient(circle at 60% 70%,rgba(0,0,0,0.05) 2px,transparent 2px),
+    radial-gradient(circle at 80% 15%,rgba(255,255,255,0.04) 1px,transparent 1px),
+    radial-gradient(circle at 40% 85%,rgba(0,0,0,0.04) 1px,transparent 1px);
+  background-size:14px 14px,22px 22px,18px 18px,11px 11px;
+}
+#board::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,0.25) 100%);
+}
+
+/* ── WRITING AREA ───────────────────────────────────────── */
+#writing-area{
+  position:absolute;top:10%;left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  z-index:10;
+  width:min(520px,88vw);
+}
+#wr-name{
+  font-family:'Permanent Marker',cursive;
+  font-size:clamp(2.8rem,5vw,4.8rem);
+  color:#1a0e04;
+  line-height:1.1;
+  min-height:64px;
+  letter-spacing:2px;
+}
+#wr-underline{
+  display:block;
+  width:100%;
+  height:14px;
+  margin:-4px 0 4px;
+}
+#wr-underline path{
+  stroke-dasharray:420;
+  stroke-dashoffset:420;
+  transition:stroke-dashoffset 0.9s cubic-bezier(0.4,0,0.2,1);
+}
+#wr-title{
+  font-family:'Caveat',cursive;
+  font-size:clamp(1.3rem,2.5vw,2rem);
+  color:#2a1505;
+  font-weight:600;
+  letter-spacing:3px;
+  min-height:36px;
+  margin-bottom:14px;
+}
+#wr-divider{
+  display:block;width:60px;height:3px;
+  background:#C9A96E;border-radius:2px;
+  margin:0 auto 10px;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.5s ease-out;
+}
+#wr-divider.drawn{transform:scaleX(1)}
+#wr-welcome{
+  font-family:'Caveat',cursive;
+  font-size:clamp(1.1rem,2vw,1.6rem);
+  color:#3a2010;
+  min-height:0;
+  margin-bottom:0;
+}
+#wr-question{
+  font-family:'Caveat',cursive;
+  font-size:clamp(1rem,1.8vw,1.4rem);
+  color:#4a3020;
+  min-height:28px;
+}
+
+/* Blinking cursor */
+.cursor{
+  display:inline-block;width:3px;height:1em;
+  background:#1a0e04;margin-left:2px;
+  vertical-align:middle;
+  animation:blink-cur 0.6s steps(1) infinite;
+}
+.cursor.gold{background:#C9A96E}
+@keyframes blink-cur{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ── STICKY NOTES ───────────────────────────────────────── */
+#notes{
+  position:absolute;
+  inset:0;
+  z-index:20;
+  pointer-events:none;
+  perspective:1200px;
+  overflow:visible;
+}
+.note{
+  width:clamp(110px,14vw,165px);
+  min-height:clamp(110px,14vw,165px);
+  position:absolute;
+  left:var(--nx);
+  top:var(--ny);
+  cursor:pointer;
+  pointer-events:auto;
+  transform:rotate(var(--r)) translateY(120px);
+  opacity:0;
+  transform-origin:top center;
+  transform-style:preserve-3d;
+  transition:opacity 0.01s,filter 0.2s;
+  filter:drop-shadow(3px 8px 10px rgba(0,0,0,0.35));
+}
+.note.dropped{
+  transition:filter 0.2s,box-shadow 0.2s;
+  animation:drop-in 0.6s cubic-bezier(0.34,1.38,0.64,1) forwards;
+}
+.note:hover{
+  filter:drop-shadow(5px 14px 18px rgba(0,0,0,0.5));
+  z-index:30;
+}
+.note:hover .note-body{transform:translateY(-6px) rotate(calc(var(--r) * 0.3))}
+.note.fluttering{animation:flutter 1.4s ease-in-out forwards}
+
+/* Note body (the coloured square) */
+.note-body{
+  width:100%;min-height:clamp(110px,14vw,165px);
+  padding:20px 14px 16px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;
+  transition:transform 0.2s ease;
+}
+/* Folded corner effect */
+.note-body::after{
+  content:'';position:absolute;
+  bottom:0;right:0;
+  width:22px;height:22px;
+  background:linear-gradient(225deg,rgba(0,0,0,0.15) 50%,transparent 50%);
+}
+/* Horizontal lines on note */
+.note-lines{
+  position:absolute;inset:34px 10px 14px;
+  display:flex;flex-direction:column;gap:18px;
+  pointer-events:none;
+}
+.note-lines span{
+  display:block;height:1px;
+  background:rgba(0,0,0,0.08);
+  border-radius:1px;
+}
+.note-label{
+  font-family:'Kalam',cursive;
+  font-size:clamp(1rem,1.5vw,1.25rem);
+  font-weight:700;
+  color:#2a1a0a;
+  text-align:center;
+  position:relative;z-index:2;
+  letter-spacing:0.5px;
+}
+.note-icon{
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:6px;
+  position:relative;z-index:2;
+}
+
+/* Pin */
+.pin{
+  position:absolute;top:-14px;left:50%;
+  transform:translateX(-50%);
+  width:22px;height:22px;z-index:5;
+}
+.pin-head{
+  width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 38% 35%,#f0d080,#C9A96E 60%,#a07020);
+  border:1.5px solid rgba(0,0,0,0.2);
+  margin:0 auto;
+  box-shadow:0 2px 4px rgba(0,0,0,0.4);
+}
+.pin-stem{
+  width:3px;height:10px;
+  background:linear-gradient(to bottom,#b08030,#705010);
+  margin:0 auto;border-radius:0 0 2px 2px;
+}
+
+/* Note colours */
+.n-yellow .note-body{background:#fef08a;background-image:linear-gradient(135deg,#fef9c3 0%,#fef08a 100%)}
+.n-green  .note-body{background:#bbf7d0;background-image:linear-gradient(135deg,#dcfce7 0%,#bbf7d0 100%)}
+.n-blue   .note-body{background:#bae6fd;background-image:linear-gradient(135deg,#e0f2fe 0%,#bae6fd 100%)}
+.n-peach  .note-body{background:#fed7aa;background-image:linear-gradient(135deg,#ffedd5 0%,#fed7aa 100%)}
+.n-lavender .note-body{background:#e9d5ff;background-image:linear-gradient(135deg,#f3e8ff 0%,#e9d5ff 100%)}
+
+/* ── ANIMATIONS ─────────────────────────────────────────── */
+@keyframes drop-in{
+  0%  {transform:rotate(var(--r)) translateY(-420px);opacity:0}
+  50% {opacity:1}
+  70% {transform:rotate(var(--r)) translateY(18px)}
+  85% {transform:rotate(var(--r)) translateY(-8px)}
+  100%{transform:rotate(var(--r)) translateY(0);opacity:1}
+}
+@keyframes flutter{
+  0%  {transform:rotate(var(--r)) rotateX(0deg)}
+  12% {transform:rotate(var(--r)) rotateX(-18deg) rotateZ(1.5deg)}
+  28% {transform:rotate(var(--r)) rotateX(9deg)  rotateZ(-1deg)}
+  44% {transform:rotate(var(--r)) rotateX(-5deg)}
+  60% {transform:rotate(var(--r)) rotateX(3deg)}
+  78% {transform:rotate(var(--r)) rotateX(-1.5deg)}
+  100%{transform:rotate(var(--r)) rotateX(0deg)}
+}
+
+/* ── OVERLAY ─────────────────────────────────────────────── */
+#overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(20,12,4,0);
+  pointer-events:none;
+  transition:background 0.4s ease;
+}
+#overlay.dim{background:rgba(20,12,4,0.7);pointer-events:all}
+
+/* ── PANELS ──────────────────────────────────────────────── */
+.panel{
+  position:fixed;z-index:200;
+  background:#fffef5;
+  border-radius:4px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(0,0,0,0.08);
+  overflow:hidden;
+  opacity:0;pointer-events:none;
+  transform:scale(0.6);
+  transition:opacity 0.4s cubic-bezier(0.34,1.3,0.64,1),transform 0.4s cubic-bezier(0.34,1.3,0.64,1);
+}
+.panel.open{
+  opacity:1;pointer-events:all;
+  transform:scale(1);
+  top:3vh!important;left:4vw!important;
+  width:92vw!important;height:94vh!important;
+}
+
+/* Lined paper effect */
+.panel-paper{
+  width:100%;height:100%;overflow-y:auto;
+  padding:56px 52px 52px;
+  background-image:
+    linear-gradient(rgba(0,0,0,0) 27px,rgba(180,200,230,0.25) 28px);
+  background-size:100% 28px;
+  background-attachment:local;
+  position:relative;
+}
+.panel-paper::-webkit-scrollbar{width:5px}
+.panel-paper::-webkit-scrollbar-track{background:rgba(0,0,0,0.05)}
+.panel-paper::-webkit-scrollbar-thumb{background:#C9A96E;border-radius:3px}
+
+/* Red margin line */
+.panel-paper::before{
+  content:'';position:absolute;
+  top:0;left:70px;bottom:0;width:1px;
+  background:rgba(220,100,100,0.25);
+  pointer-events:none;
+}
+
+/* Close button */
+.close-btn{
+  position:sticky;top:0;float:right;
+  background:none;border:2px solid rgba(201,169,110,0.5);
+  border-radius:8px;cursor:pointer;
+  padding:6px 14px;
+  font-family:'Kalam',cursive;font-size:1rem;
+  color:#8a6030;
+  transition:all 0.2s;z-index:10;
+  margin-bottom:8px;
+  display:flex;align-items:center;gap:6px;
+}
+.close-btn:hover{background:rgba(201,169,110,0.15);border-color:#C9A96E;color:#5a3010}
+
+/* Panel content typography */
+.panel-title{
+  font-family:'Permanent Marker',cursive;
+  font-size:2.4rem;color:#1a0e04;
+  margin-bottom:4px;letter-spacing:1px;
+  clear:both;
+}
+.panel-rule{
+  width:80px;height:3px;
+  background:#C9A96E;border-radius:2px;
+  margin-bottom:28px;
+}
+.p-section{
+  font-family:'Kalam',cursive;
+  margin-bottom:20px;
+}
+.p-section h3{
+  font-size:1.3rem;font-weight:700;
+  color:#2a1a08;margin-bottom:4px;
+  display:flex;align-items:center;gap:8px;
+}
+.p-section p,.p-section li{
+  font-size:1.05rem;color:#3a2a18;
+  line-height:1.7;
+  font-weight:400;
+}
+.p-section ul{list-style:none;padding:0}
+.p-section ul li::before{content:'→ ';color:#C9A96E;font-weight:700}
+.p-section ul li{padding:1px 0}
+.p-flag{
+  display:inline-block;
+  font-family:'Kalam',cursive;
+  font-size:0.78rem;font-weight:700;
+  padding:2px 10px;border-radius:20px;
+  background:rgba(201,169,110,0.2);
+  color:#8a5020;border:1px solid rgba(201,169,110,0.4);
+  margin-bottom:6px;
+}
+.p-meta{
+  font-family:'Kalam',cursive;
+  font-size:0.9rem;color:#9a7050;
+  margin-bottom:6px;
+}
+.p-divider{
+  border:none;border-top:1px dashed rgba(201,169,110,0.4);
+  margin:20px 0;
+}
+.kpi-row{
+  display:flex;flex-wrap:wrap;gap:12px;
+  margin-bottom:18px;
+}
+.kpi-chip{
+  font-family:'Kalam',cursive;
+  background:rgba(201,169,110,0.12);
+  border:1px dashed rgba(201,169,110,0.5);
+  border-radius:8px;padding:8px 16px;
+  text-align:center;
+}
+.kpi-chip .val{font-size:1.3rem;font-weight:700;color:#8a5010;display:block}
+.kpi-chip .lbl{font-size:0.78rem;color:#9a7050;display:block}
+.contact-row{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:12px;
+  font-family:'Kalam',cursive;font-size:1.1rem;
+  color:#3a2a18;
+}
+.contact-icon{font-size:1.3rem;width:28px;text-align:center;flex-shrink:0}
+.contact-link{color:#C9A96E;text-decoration:none;font-weight:700}
+.contact-link:hover{text-decoration:underline}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.badge{
+  font-family:'Kalam',cursive;font-size:0.85rem;
+  padding:3px 12px;border-radius:20px;
+  background:rgba(201,169,110,0.1);
+  color:#7a4a10;border:1px solid rgba(201,169,110,0.35);
+}
+.award-item{
+  display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;
+}
+.award-icon-big{font-size:1.8rem;flex-shrink:0;margin-top:2px}
+
+/* ── REPLAY BUTTON ───────────────────────────────────────── */
+#replay-btn{
+  position:fixed;bottom:28px;right:28px;z-index:50;
+  background:rgba(20,12,4,0.7);border:1px solid rgba(201,169,110,0.4);
+  color:#C9A96E;border-radius:30px;padding:8px 18px;
+  font-family:'Caveat',cursive;font-size:1rem;
+  cursor:pointer;opacity:0;pointer-events:none;
+  transition:opacity 0.4s,background 0.2s;
+}
+#replay-btn.visible{opacity:1;pointer-events:all}
+#replay-btn:hover{background:rgba(201,169,110,0.2)}
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media(max-width:768px){
+  #board{border-width:12px}
+  #writing-area{top:7%;width:88vw}
+  #wr-name{font-size:clamp(2rem,8vw,3.2rem)}
+  #wr-title{font-size:clamp(1rem,3.5vw,1.5rem);letter-spacing:2px}
+  #wr-welcome{font-size:clamp(0.95rem,3vw,1.3rem)}
+  #wr-question{font-size:clamp(0.88rem,2.8vw,1.2rem)}
+  .note{width:100px;min-height:100px}
+  .note-body{min-height:100px}
+  .note-label{font-size:0.88rem}
+  .note-icon{font-size:1.2rem;margin-bottom:4px}
+  .panel-paper{padding:44px 24px 44px 44px}
+  #replay-btn{bottom:18px;right:16px;font-size:0.88rem;padding:6px 14px}
+}
+@media(max-width:480px){
+  #board{border-width:8px}
+  #writing-area{top:6%;width:92vw}
+  #wr-name{font-size:clamp(1.8rem,9vw,2.8rem)}
+  .note{width:88px;min-height:88px}
+  .note-body{min-height:88px}
+  .note-label{font-size:0.82rem}
+  .note-icon{font-size:1rem;margin-bottom:3px}
+  .note-lines span{display:none}
+  .panel-paper{padding:38px 16px 38px 36px}
+  .panel-paper::before{left:48px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── BOARD ──────────────────────────────────────────────── -->
+<div id="board">
+
+  <!-- Writing area -->
+  <div id="writing-area">
+    <div id="wr-name"></div>
+    <svg id="wr-underline" viewBox="0 0 440 14" preserveAspectRatio="none">
+      <path d="M4 9 Q110 3 220 9 Q330 15 436 9"
+            stroke="#C9A96E" stroke-width="3"
+            fill="none" stroke-linecap="round"/>
+    </svg>
+    <div id="wr-title"></div>
+    <div id="wr-divider"></div>
+    <div id="wr-welcome"></div>
+    <div id="wr-question"></div>
+  </div>
+
+  <!-- Sticky notes -->
+  <div id="notes">
+
+    <div class="note n-yellow" style="--r:-4deg;--nx:4%;--ny:52%" data-panel="experience">
+      <div class="pin"><div class="pin-head"></div><div class="pin-stem"></div></div>
+      <div class="note-body">
+        <div class="note-lines"><span></span><span></span><span></span><span></span></div>
+        <div class="note-icon"><svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="#2a1a0a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="10" r="4.5"/><path d="M6.5 28c0-5.2 4.3-9.5 9.5-9.5s9.5 4.3 9.5 9.5"/></svg></div>
+        <div class="note-label">Experience</div>
+      </div>
+    </div>
+
+    <div class="note n-green" style="--r:3deg;--nx:38%;--ny:46%" data-panel="projects">
+      <div class="pin"><div class="pin-head"></div><div class="pin-stem"></div></div>
+      <div class="note-body">
+        <div class="note-lines"><span></span><span></span><span></span><span></span></div>
+        <div class="note-icon"><svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="#2a1a0a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h11l6 6v20H8z"/><path d="M19 3v6h6"/><line x1="11" y1="15" x2="21" y2="15"/><line x1="11" y1="19" x2="21" y2="19"/><line x1="11" y1="23" x2="17" y2="23"/></svg></div>
+        <div class="note-label">Projects</div>
+      </div>
+    </div>
+
+    <div class="note n-blue" style="--r:-2deg;--nx:63%;--ny:54%" data-panel="expertise">
+      <div class="pin"><div class="pin-head"></div><div class="pin-stem"></div></div>
+      <div class="note-body">
+        <div class="note-lines"><span></span><span></span><span></span><span></span></div>
+        <div class="note-icon"><svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="#2a1a0a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4c-4.4 0-8 3.6-8 8 0 3.2 1.8 6 4.5 7.4V22h7v-2.6C22.2 18 24 15.2 24 12c0-4.4-3.6-8-8-8z"/><line x1="13" y1="25" x2="19" y2="25"/><line x1="14" y1="28" x2="18" y2="28"/></svg></div>
+        <div class="note-label">Expertise</div>
+      </div>
+    </div>
+
+    <div class="note n-peach" style="--r:5deg;--nx:14%;--ny:68%" data-panel="recognition">
+      <div class="pin"><div class="pin-head"></div><div class="pin-stem"></div></div>
+      <div class="note-body">
+        <div class="note-lines"><span></span><span></span><span></span><span></span></div>
+        <div class="note-icon"><svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="#2a1a0a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l3.3 7 7.7 1.1-5.6 5.5 1.4 7.7L16 20.6l-6.8 3.7 1.4-7.7L5 11.1l7.7-1.1z"/></svg></div>
+        <div class="note-label">Recognition</div>
+      </div>
+    </div>
+
+    <div class="note n-lavender" style="--r:-3deg;--nx:52%;--ny:70%" data-panel="contact">
+      <div class="pin"><div class="pin-head"></div><div class="pin-stem"></div></div>
+      <div class="note-body">
+        <div class="note-lines"><span></span><span></span><span></span><span></span></div>
+        <div class="note-icon"><svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="#2a1a0a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h22a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H14l-6 6v-6H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="1.2" fill="#2a1a0a" stroke="none"/><circle cx="16" cy="13" r="1.2" fill="#2a1a0a" stroke="none"/><circle cx="20" cy="13" r="1.2" fill="#2a1a0a" stroke="none"/></svg></div>
+        <div class="note-label">Contact</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── OVERLAY ────────────────────────────────────────────── -->
+<div id="overlay"></div>
+
+<!-- ── PANEL: EXPERIENCE ──────────────────────────────────── -->
+<div class="panel" id="panel-experience">
+  <div class="panel-paper">
+    <button class="close-btn" onclick="closePanel()">← Back to board</button>
+    <h2 class="panel-title">Career Journey</h2>
+    <div class="panel-rule"></div>
+
+    <div class="p-section">
+      <h3>Freelance IT & Digital Consultant</h3>
+      <p class="p-meta">India &nbsp;·&nbsp; Remote &nbsp;·&nbsp; Sep 2025 – Present &nbsp;·&nbsp; 10 Months</p>
+      <ul>
+        <li>Project Management consultant for UAE technology company (Remote/Part Time)</li>
+        <li>Freelance Digital onboarding projects for India/UAE clients — Domain, DNS, Website, SEO, Email Auth & Analytics.</li>
+        <li>MVP product development for SMB startups (Ecom, Hopsitality and Tech clients)</li>
+        <li>Digital Launchpad: Developed SaaS platform for freelance service and project management (PMP/ITIL & Agile Adherace). Self Funded with plan to scale public version</li>
+      </ul>
+      <div class="badge-row">
+        <span class="badge">ITSM</span><span class="badge">Oracle XStore</span><span class="badge">Azure</span>
+        <span class="badge">Meraki</span><span class="badge">ServiceNow</span><span class="badge">RFID</span><span class="badge">7 Countries</span>
+      </div>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <span class="p-flag">⭐ Flagship Role</span>
+      <h3>Louis Vuitton (LVMH Group)</h3>
+      <p class="p-meta">Regional IT Manager, Middle East &nbsp;·&nbsp; Dubai, UAE &nbsp;·&nbsp; Aug 2019 – Oct 2024 &nbsp;·&nbsp; 5 Years</p>
+      <ul>
+        <li>End-to-end IS&T for 24 retail sites across 7 GCC countries, direct report to the Regional CFO, and Paris CIO</li>
+        <li>Delivered 65+ projects with zero business disruption — store openings, Oracle XStore migrations, Azure cloud, RFID, e-commerce</li>
+        <li>Achieved 20% IT cost reduction through vendor negotiation and infrastructure optimisation</li>
+        <li>Attended Leads @ LV (2024): 14 months leadership for handpicked EMEA candidates, initiated by President of LV EMEA</li>
+		<li>Reduced SLA breaches by 20% through ITIL aligned incident, problem, change, and Major Incident governance</li>
+      </ul>
+      <div class="badge-row">
+        <span class="badge">ITSM</span><span class="badge">Oracle XStore</span><span class="badge">Azure</span>
+        <span class="badge">Meraki</span><span class="badge">ServiceNow</span><span class="badge">RFID</span><span class="badge">7 Countries</span>
+      </div>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <h3>NIMR Automotive LLC · EDGE Group</h3>
+      <p class="p-meta">System Administrator / Support Team Lead &nbsp;·&nbsp; Abu Dhabi &nbsp;·&nbsp; May 2016 – Aug 2019</p>
+      <ul>
+        <li>Built IT infrastructure from greenfield for a UAE defence manufacturing facility</li>
+        <li>Implemented ManageEngine ITSM and ITIL framework from scratch impacting 25% faster response times</li>
+        <li>100% backup compliance · VMware ESXi · HPE 3PAR · defence grade security with Seclore IRM</li>
+      </ul>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <h3>MDS Computers — on-site at ZADCO (ADNOC Group)</h3>
+      <p class="p-meta">IS&T Project Coordinator &nbsp;·&nbsp; Abu Dhabi &nbsp;·&nbsp; Dec 2014 – May 2016</p>
+      <ul>
+        <li>Senior IT support at Abu Dhabi oil and gas giant under ADNOC</li>
+        <li>Multi site Windows migrations · Citrix SSO · built team SOPs and knowledge wiki from scratch</li>
+      </ul>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <h3>Accenture India — Client: RSA Ireland Insurance</h3>
+      <p class="p-meta">Live Service Team Lead / Problem Manager &nbsp;·&nbsp; Bangalore &nbsp;·&nbsp; Jun 2011 – May 2014</p>
+      <ul>
+        <li>Led 12+ professionals handling 2,000+ tickets/month for a major European insurance client</li>
+        <li>Full Problem Management lifecycle — 5 Whys, Fishbone RCA, client facing reports (PIR and MIR)</li>
+        <li>Dual role as senior AS400 developer (RPGLE, CLLE, COBOL)</li>
+      </ul>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <span class="p-flag">🏠 Where It All Started</span>
+      <h3>Valtech India — Client: Louis Vuitton Global</h3>
+      <p class="p-meta">Tech Support Team Lead / 24×7 Operations &nbsp;·&nbsp; Bangalore &nbsp;·&nbsp; Mar 2008 – Mar 2011</p>
+      <ul>
+        <li>24/7 IT support Team Lead for LV North America retail operations — 96% SLA compliance</li>
+        <li>Problem Manager: incident trend analysis, permanent resolutions at scale</li>
+        <li>AS/400 retail apps for LV Global (RPGLE, CLLE, COBOL, DB2/400). The start of experience with LV.</li>
+        <li>Three LV Client Delight Awards · Valtech Ruby and Emerald Awards · Valtech Spark Award</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL: PROJECTS ─────────────────────────────────────── -->
+<div class="panel" id="panel-projects">
+  <div class="panel-paper">
+    <button class="close-btn" onclick="closePanel()">← Back to board</button>
+    <h2 class="panel-title">Project Portfolio</h2>
+    <div class="panel-rule"></div>
+    <p class="p-section" style="font-family:Kalam,cursive;font-size:1rem;color:#9a7050;margin-bottom:18px">
+      Louis Vuitton Middle East · Aug 2019 – Oct 2024 · 65+ IS&T projects across 7 GCC countries
+    </p>
+
+    <div class="kpi-row">
+      <div class="kpi-chip"><span class="val">+2 Wks</span><span class="lbl">Ahead of schedule</span></div>
+      <div class="kpi-chip"><span class="val">-5%</span><span class="lbl">Under budget</span></div>
+      <div class="kpi-chip"><span class="val">100%</span><span class="lbl">Scope completion</span></div>
+      <div class="kpi-chip"><span class="val">96%</span><span class="lbl">Stakeholder sat.</span></div>
+      <div class="kpi-chip"><span class="val">0</span><span class="lbl">Disruptions</span></div>
+    </div>
+
+    <p class="p-section" style="margin-bottom:18px">
+      LV 5 year project portfolio: <a href="https://fawazmajeed.github.io/projects/" target="_blank" rel="noopener">https://fawazmajeed.github.io/projects/</a>
+    </p>
+
+    <div class="p-section">
+      <h3>2024 &nbsp;<span style="font-size:0.85rem;font-weight:400;color:#9a7050">Jan–Sep · Final chapter</span></h3>
+      <ul>
+        <li>Bahrain Marassi New Store Opening</li>
+        <li>Riyadh Solitaire New Store Tech Go-Live</li>
+        <li>RFID Deployment UAE · Alpha · VisionArea ME</li>
+        <li>Planet TaxFree Integration · KSA E-Invoice</li>
+        <li>Pharrel PopUp Dubai Mall · Savoir Rever Atlantis</li>
+      </ul>
+    </div>
+    <hr class="p-divider">
+    <div class="p-section">
+      <h3>2023 &nbsp;<span style="font-size:0.85rem;font-weight:400;color:#9a7050">Peak delivery year · 15 projects</span></h3>
+      <ul>
+        <li>Dubai Atlantis New Store — First LV Resort Store in ME 🎉</li>
+        <li>Doha Printemps · Dubai Mall VIC · Kuwait Salhia</li>
+        <li>TWIST Go-Live ME · Qatar KBRW · Teams Walkie-Talkie</li>
+        <li>Berluti MOE & Dubai Mall relocations</li>
+      </ul>
+    </div>
+    <hr class="p-divider">
+    <div class="p-section">
+      <h3>2022 &nbsp;<span style="font-size:0.85rem;font-weight:400;color:#9a7050">18 projects · Airport stores era</span></h3>
+      <ul>
+        <li>Doha Airport South & North New Store Openings</li>
+        <li>SEE LV Dubai Mall · FIFA Screening Qatar · Croco UAE</li>
+        <li>ZScaler Deployment ME · E-Business Card Launch</li>
+        <li>Jordan Amman XStore · Carriyo ME · Shell Dubai CSC</li>
+      </ul>
+    </div>
+    <hr class="p-divider">
+    <div class="p-section">
+      <h3>2021 &nbsp;<span style="font-size:0.85rem;font-weight:400;color:#9a7050">GCC-wide WAN upgrades</span></h3>
+      <ul>
+        <li>Dubai Airport DDF New Store Opening</li>
+        <li>WAN upgrades across Kuwait · Qatar · Bahrain</li>
+        <li>XStore Migration Kuwait & Qatar · First XStore Upgrade</li>
+      </ul>
+    </div>
+    <hr class="p-divider">
+    <div class="p-section">
+      <h3>2020 &nbsp;<span style="font-size:0.85rem;font-weight:400;color:#9a7050">E-commerce year</span></h3>
+      <ul>
+        <li>First LV E-Com Store Launch in Middle East 🌟</li>
+        <li>Dubai Mall Flagship Reopening · UAE Hardware Retrofit</li>
+        <li>WAN upgrades UAE, KSA · Cisco Jabber Deployment</li>
+      </ul>
+    </div>
+    <hr class="p-divider">
+    <div class="p-section">
+      <h3>2019 &nbsp;<span style="font-size:0.85rem;font-weight:400;color:#9a7050">Day One · 25 August 2019</span></h3>
+      <ul>
+        <li>🎯 Joined Louis Vuitton Middle East as IS Manager</li>
+        <li>MOE Store Relocation · Dubai Mall Temp Store Opening</li>
+        <li>Riyadh Croco Event · Dubai Trunk Show · Doha Highend PopUp</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL: EXPERTISE ────────────────────────────────────── -->
+<div class="panel" id="panel-expertise">
+  <div class="panel-paper">
+    <button class="close-btn" onclick="closePanel()">← Back to board</button>
+    <h2 class="panel-title">The Toolkit</h2>
+    <div class="panel-rule"></div>
+    <p class="p-section" style="font-family:Kalam,cursive;font-size:1rem;color:#9a7050;margin-bottom:22px">
+      Depth in ITSM. Breadth across everything else. Five roles, four countries, sixteen years.
+    </p>
+
+    <div class="p-section">
+      <h3>01 — ITSM & ITIL Governance</h3>
+      <p>Lifecycle ownership across Incident, Problem, Change, Major Incident, CMDB, and CSI. Fewer SLA breaches, faster MTTR, root causes that stay resolved.</p>
+      <div class="badge-row">
+        <span class="badge">ITIL V3/V4</span><span class="badge">Major Incident</span><span class="badge">Problem Mgmt</span>
+        <span class="badge">ServiceNow</span><span class="badge">ManageEngine</span><span class="badge">CSI</span><span class="badge">SLA/OLA/XLA</span>
+      </div>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <h3>02 — Regional IT Operations</h3>
+      <p>End-to-end IT ownership across multi-country environments. Infrastructure, EUC, vendor governance, budget accountability. 24 sites, 7 GCC markets, 99.9% uptime.</p>
+      <div class="badge-row">
+        <span class="badge">Multi-country Ops</span><span class="badge">Cisco Meraki</span><span class="badge">Azure</span>
+        <span class="badge">Zscaler</span><span class="badge">VMware ESXi</span><span class="badge">HPE 3PAR</span><span class="badge">EUC</span>
+      </div>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <h3>03 — IT Project Delivery</h3>
+      <p>65+ technology rollouts — store openings, Oracle XStore migrations, Azure transitions, RFID, clienteling. Every one on time. Zero disruptions.</p>
+      <div class="badge-row">
+        <span class="badge">Oracle XStore</span><span class="badge">PMP</span><span class="badge">Store Rollouts</span>
+        <span class="badge">Zero Downtime</span><span class="badge">RFID</span><span class="badge">Stakeholder Mgmt</span>
+      </div>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <h3>04 — Data & Decision Science</h3>
+      <p>Advanced Certificate, IIT Delhi 2025. Applying ISM, AHP, and DEMATEL for root cause analysis and predictive service analytics. Data into decisions, not just dashboards.</p>
+      <div class="badge-row">
+        <span class="badge">IIT Delhi · 2025</span><span class="badge">ISM / DEMATEL</span><span class="badge">PowerBI</span>
+        <span class="badge">Python</span><span class="badge">Power Automate</span><span class="badge">MS Copilot</span>
+      </div>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <h3>Full stack (selected)</h3>
+      <div class="badge-row" style="margin-top:8px">
+        <span class="badge">Oracle XStore</span><span class="badge">Cegid POS</span><span class="badge">SAP</span>
+        <span class="badge">SolarWinds</span><span class="badge">Grafana</span><span class="badge">Zabbix</span>
+        <span class="badge">Jira Service Mgmt</span><span class="badge">BMC DEIS</span><span class="badge">Altiris</span>
+        <span class="badge">Veritas BackupExec</span><span class="badge">Pulse Secure VPN</span>
+        <span class="badge">IPAM/Infoblox</span><span class="badge">Microsoft 365</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL: RECOGNITION ──────────────────────────────────── -->
+<div class="panel" id="panel-recognition">
+  <div class="panel-paper">
+    <button class="close-btn" onclick="closePanel()">← Back to board</button>
+    <h2 class="panel-title">Recognition</h2>
+    <div class="panel-rule"></div>
+    <p class="p-section" style="font-family:Kalam,cursive;font-size:1rem;color:#9a7050;margin-bottom:22px">
+      Awards from Valtech's COO and Louis Vuitton's Group CIO. Earned in the first three years. The standard that followed for the next thirteen.
+    </p>
+
+    <div class="award-item">
+      <div class="award-icon-big">⭐</div>
+      <div class="p-section" style="margin:0">
+        <h3>Leads @ LV Programme</h3>
+        <p class="p-meta">Louis Vuitton EMEA · 2024 · 14-Month Leadership Programme</p>
+        <p>1 of approximately 40 handpicked candidates across all LV EMEA regions. 1 of 2 IT domain representatives. Two immersive weeks in Paris, dedicated executive coaching. Programme graduates progress to Director and senior leadership roles within LV.</p>
+      </div>
+    </div>
+    <hr class="p-divider">
+
+    <div class="award-item">
+      <div class="award-icon-big">🏆</div>
+      <div class="p-section" style="margin:0">
+        <h3>LV Client Delight Award × 3</h3>
+        <p class="p-meta">Louis Vuitton Global · 2008 · 2010 · 2011</p>
+        <p>Signed by the Group CIO of Louis Vuitton. For commendable contribution to LV RMS Maintenance and 24×7 Support.</p>
+      </div>
+    </div>
+    <hr class="p-divider">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="award-item">
+        <div class="award-icon-big">💎</div>
+        <div class="p-section" style="margin:0">
+          <h3>Valtech Emerald Award</h3>
+          <p class="p-meta">April 2010 · Signed by COO, Valtech India</p>
+        </div>
+      </div>
+      <div class="award-item">
+        <div class="award-icon-big">🔴</div>
+        <div class="p-section" style="margin:0">
+          <h3>Valtech Ruby Award</h3>
+          <p class="p-meta">May 2009 · Signed by COO, Valtech India</p>
+        </div>
+      </div>
+      <div class="award-item">
+        <div class="award-icon-big">⚡</div>
+        <div class="p-section" style="margin:0">
+          <h3>Accenture Excellence & Shining Star</h3>
+          <p class="p-meta">2012 · 2013 · RSA Ireland project</p>
+        </div>
+      </div>
+      <div class="award-item">
+        <div class="award-icon-big">🌐</div>
+        <div class="p-section" style="margin:0">
+          <h3>ITU WTDC-2014 Certificate</h3>
+          <p class="p-meta">Dubai · April 2014 · International Telecommunication Union</p>
+        </div>
+      </div>
+      <div class="award-item">
+        <div class="award-icon-big">✈️</div>
+        <div class="p-section" style="margin:0">
+          <h3>LV Hong Kong Store Visit</h3>
+          <p class="p-meta">LVMH Pacific · June 2010 · Two weeks on-site</p>
+        </div>
+      </div>
+    </div>
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <h3>Qualifications & Certifications</h3>
+      <ul>
+        <li>Advanced Certificate — Data & Decision Science · IIT Delhi · Oct 2024 – Jun 2025</li>
+        <li>Python Essentials · UAE · Jan 2025</li>
+        <li>PMI-PMP Project Management Training · UAE · Dec 2014</li>
+        <li>Microsoft MCSE · India · Apr 2011</li>
+        <li>ITIL V3 Foundation — EXIN · Bangalore · Oct 2010</li>
+        <li>IBM AS400 Programming & System Concepts · India · Jul 2006</li>
+        <li>B.E. Computer Science · P.A. College of Engineering, VTU · Jun 2006</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ── PANEL: CONTACT ──────────────────────────────────────── -->
+<div class="panel" id="panel-contact">
+  <div class="panel-paper">
+    <button class="close-btn" onclick="closePanel()">← Back to board</button>
+    <h2 class="panel-title">Let's Connect</h2>
+    <div class="panel-rule"></div>
+
+    <div class="p-section" style="background:rgba(34,197,94,0.07);border:1px dashed rgba(34,197,94,0.3);border-radius:10px;padding:16px;margin-bottom:24px">
+      <h3 style="color:#1a6a3a">Available Immediately · Open to Relocation</h3>
+      <ul style="margin-top:8px">
+        <li style="color:#1a6a3a">Open to full-time, hybrid, remote, and consulting roles</li>
+        <li style="color:#1a6a3a">No notice period · Immediate start</li>
+        <li style="color:#1a6a3a">UAE · GCC · MENA · Europe · APAC</li>
+        <li style="color:#1a6a3a">8+ years UAE IT leadership. Zero ramp-up on GCC markets</li>
+      </ul>
+    </div>
+
+    <div class="contact-row">
+      <span class="contact-icon">📧</span>
+      <a class="contact-link" href="mailto:Fawaz.majeed@yahoo.com">Fawaz.majeed@yahoo.com</a>
+    </div>
+    <div class="contact-row">
+      <span class="contact-icon">📱</span>
+      <a class="contact-link" href="tel:+918089119877">+91 8089119877 (India)</a>
+    </div>
+    <div class="contact-row">
+      <span class="contact-icon">💬</span>
+      <a class="contact-link" href="https://wa.me/971509728734" target="_blank">+971 509728734 (WhatsApp UAE)</a>
+    </div>
+    <div class="contact-row">
+      <span class="contact-icon">💼</span>
+      <a class="contact-link" href="https://linkedin.com/in/fawazmajeed" target="_blank">linkedin.com/in/fawazmajeed</a>
+    </div>
+    <div class="contact-row">
+      <span class="contact-icon">📅</span>
+      <a class="contact-link" href="https://calendar.app.google/bKuHMxissXezL4kTA" target="_blank">Book a 15-min call</a>
+    </div>
+    <div class="contact-row">
+      <span class="contact-icon">📄</span>
+      <a class="contact-link" href="https://drive.google.com/file/d/1x5lCXj8bsPg4K9GUUag4OXgejsqxpY9T/view?usp=sharing" target="_blank">Download CV (PDF)</a>
+    </div>
+
+    <hr class="p-divider">
+
+    <div class="p-section">
+      <h3>Target roles</h3>
+      <div class="badge-row" style="margin-top:8px">
+        <span class="badge">Regional IT Manager</span>
+        <span class="badge">IT Director</span>
+        <span class="badge">Head of IT</span>
+        <span class="badge">ITSM Manager</span>
+        <span class="badge">Service Delivery</span>
+        <span class="badge">IT Project Manager</span>
+        <span class="badge">Retail Technology</span>
+        <span class="badge">IT Consulting</span>
+      </div>
+      <p style="font-size:0.9rem;color:#9a7050;margin-top:8px">UAE · GCC · KSA · MENA · Europe · APAC</p>
+    </div>
+
+    <hr class="p-divider">
+    <p style="font-family:'Permanent Marker',cursive;font-size:2rem;color:#C9A96E;text-align:center;margin-top:16px">
+      "Structure. Scale. Move."
+    </p>
+    <p style="font-family:'Caveat',cursive;font-size:1rem;color:#9a7050;text-align:center;margin-top:4px">— Fawaz Majeed</p>
+  </div>
+</div>
+
+<!-- ── REPLAY ──────────────────────────────────────────────── -->
+<button id="replay-btn" onclick="startSequence()">↺ Replay intro</button>
+
+<script>
+const board      = document.getElementById('board');
+const overlay    = document.getElementById('overlay');
+const wrName     = document.getElementById('wr-name');
+const wrUnder    = document.getElementById('wr-underline');
+const wrTitle    = document.getElementById('wr-title');
+const wrDivider  = document.getElementById('wr-divider');
+const wrWelcome  = document.getElementById('wr-welcome');
+const wrQuestion = document.getElementById('wr-question');
+const notes      = document.querySelectorAll('.note');
+const replayBtn  = document.getElementById('replay-btn');
+
+let currentPanel = null;
+let windTimer = null;
+
+// ── WRITE UTILITY ───────────────────────────────────────────
+function write(el, text, delay, cb) {
+  el.innerHTML = '';
+  let i = 0;
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  el.appendChild(cursor);
+  const iv = setInterval(() => {
+    if (i < text.length) {
+      cursor.before(document.createTextNode(text[i]));
+      i++;
+    } else {
+      clearInterval(iv);
+      cursor.remove();
+      if (cb) cb();
+    }
+  }, delay);
+}
+
+// ── SEQUENCE ────────────────────────────────────────────────
+function startSequence() {
+  replayBtn.classList.remove('visible');
+  notes.forEach(n => {
+    n.classList.remove('dropped','fluttering');
+    n.style.transform = 'rotate(var(--r)) translateY(120px)';
+    n.style.opacity = '0';
+  });
+  wrName.innerHTML = '';
+  wrUnder.querySelector('path').style.strokeDashoffset = '420';
+  wrTitle.innerHTML = '';
+  wrDivider.className = 'p-divider'; // reset
+  wrWelcome.innerHTML = '';
+  wrQuestion.innerHTML = '';
+    wrWelcome.innerHTML = '';
+
+  setTimeout(() => {
+    board.classList.add('visible');
+
+    // Write name
+    setTimeout(() => {
+      write(wrName, 'Fawaz Majeed', 85, () => {
+        // Draw underline
+        setTimeout(() => {
+          wrUnder.querySelector('path').style.strokeDashoffset = '0';
+        }, 100);
+        // Write title
+        setTimeout(() => {
+          write(wrTitle, 'Senior IT Leader', 32, () => {
+            // Draw divider line
+            setTimeout(() => {
+              wrDivider.style.cssText = 'display:block;width:60px;height:3px;background:#C9A96E;border-radius:2px;margin:0 auto 20px;transition:transform 0.5s ease-out;transform:scaleX(1);transform-origin:left';
+            }, 200);
+            // Write question
+            setTimeout(() => {
+              write(wrQuestion, 'What would you like to know about my background?', 21, () => {
+                // Drop notes
+                setTimeout(dropNotes, 700);
+              });
+            }, 500);
+          });
+        }, 500);
+      });
+    }, 400);
+  }, 200);
+}
+
+// ── DROP NOTES ───────────────────────────────────────────────
+function dropNotes() {
+  notes.forEach((note, i) => {
+    setTimeout(() => {
+      note.classList.add('dropped');
+      note.style.opacity = '1';
+    }, i * 280);
+  });
+  setTimeout(() => {
+    replayBtn.classList.add('visible');
+    startWind();
+  }, notes.length * 280 + 800);
+}
+
+// ── WIND FLUTTER ─────────────────────────────────────────────
+function startWind() {
+  if (windTimer) clearTimeout(windTimer);
+  function blow() {
+    const dropped = Array.from(notes).filter(n => n.classList.contains('dropped') && !n.classList.contains('fluttering'));
+    if (dropped.length) {
+      const pick = dropped[Math.floor(Math.random() * dropped.length)];
+      pick.classList.add('fluttering');
+      pick.addEventListener('animationend', () => pick.classList.remove('fluttering'), { once: true });
+    }
+    windTimer = setTimeout(blow, 2800 + Math.random() * 5000);
+  }
+  windTimer = setTimeout(blow, 1500 + Math.random() * 3000);
+}
+
+// ── OPEN PANEL ───────────────────────────────────────────────
+notes.forEach(note => {
+  note.addEventListener('click', () => {
+    const panelId = 'panel-' + note.dataset.panel;
+    const panel   = document.getElementById(panelId);
+    if (!panel) return;
+
+    const rect = note.getBoundingClientRect();
+    panel.style.top    = rect.top    + 'px';
+    panel.style.left   = rect.left   + 'px';
+    panel.style.width  = rect.width  + 'px';
+    panel.style.height = rect.height + 'px';
+    panel.style.transformOrigin = 'center center';
+
+    overlay.classList.add('dim');
+    currentPanel = panel;
+
+    requestAnimationFrame(() => {
+      panel.style.display = 'block';
+      requestAnimationFrame(() => {
+        panel.classList.add('open');
+      });
+    });
+  });
+});
+
+// ── CLOSE PANEL ──────────────────────────────────────────────
+function closePanel() {
+  if (!currentPanel) return;
+  const panel = currentPanel;
+  panel.classList.remove('open');
+  overlay.classList.remove('dim');
+  panel.addEventListener('transitionend', () => {
+    panel.style.display = 'none';
+    currentPanel = null;
+  }, { once: true });
+}
+
+// Close on overlay click
+overlay.addEventListener('click', closePanel);
+
+// Close on Escape
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+// ── BOOT ─────────────────────────────────────────────────────
+startSequence();
+</script>
+</body>
+</html>
